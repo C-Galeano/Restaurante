@@ -2,21 +2,19 @@ package com.cristian.restaurante_api.service;
 
 import com.cristian.restaurante_api.model.Usuario;
 import com.cristian.restaurante_api.repository.UsuarioRepository;
-import com.cristian.restaurante_api.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<Usuario> listar() {
@@ -27,7 +25,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Usuario guardar(Usuario usuario) {
 
         usuario.setPassword(
-                passwordEncoder.encode(usuario.getPassword())
+                passwordEncoder.encode(
+                        usuario.getPassword()
+                )
         );
 
         return usuarioRepository.save(usuario);
@@ -35,7 +35,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario buscarPorId(Long id) {
-        return usuarioRepository.findById(id).orElse(null);
+        return usuarioRepository.findById(id)
+                .orElse(null);
     }
 
     @Override

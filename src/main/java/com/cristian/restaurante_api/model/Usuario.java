@@ -1,5 +1,6 @@
 package com.cristian.restaurante_api.model;
 
+import com.cristian.restaurante_api.enums.Rol;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,12 +18,13 @@ public class Usuario {
 
     private String password;
 
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
     public Usuario() {
     }
 
-    public Usuario(Long id, String nombre, String cedula, String password, String rol) {
+    public Usuario(Long id, String nombre, String cedula, String password, Rol rol) {
         this.id = id;
         this.nombre = nombre;
         this.cedula = cedula;
@@ -62,11 +64,11 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 }
