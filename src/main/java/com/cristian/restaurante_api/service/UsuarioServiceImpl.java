@@ -3,6 +3,8 @@ package com.cristian.restaurante_api.service;
 import com.cristian.restaurante_api.model.Usuario;
 import com.cristian.restaurante_api.repository.UsuarioRepository;
 import com.cristian.restaurante_api.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,11 +12,11 @@ import java.util.List;
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<Usuario> listar() {
@@ -23,6 +25,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario guardar(Usuario usuario) {
+
+        usuario.setPassword(
+                passwordEncoder.encode(usuario.getPassword())
+        );
+
         return usuarioRepository.save(usuario);
     }
 
