@@ -18,12 +18,14 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Pedido crearPedido(Pedido pedido) {
 
+        pedido.setId(null);
         pedido.setFecha(LocalDateTime.now());
 
         double total = 0;
 
         for (var detalle : pedido.getDetalles()) {
 
+            detalle.setId(null);
             detalle.setPedido(pedido);
 
             double subtotal =
