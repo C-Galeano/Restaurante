@@ -1,8 +1,9 @@
 package com.cristian.restaurante_api.service;
 
+import com.cristian.restaurante_api.model.Mesa;
 import com.cristian.restaurante_api.model.Pedido;
+import com.cristian.restaurante_api.repository.MesaRepository;
 import com.cristian.restaurante_api.repository.PedidoRepository;
-import com.cristian.restaurante_api.service.PedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;
+    private final MesaRepository mesaRepository;
 
     @Override
     public Pedido crearPedido(Pedido pedido) {
@@ -39,6 +41,12 @@ public class PedidoServiceImpl implements PedidoService {
 
         pedido.setTotal(total);
 
+        // Marcar mesa como ocupada
+        Mesa mesa = mesaRepository.findById(pedido.getMesa().getId())
+                .orElseThrow();
+        mesa.setDisponible(false);
+        mesaRepository.save(mesa);
+
         return pedidoRepository.save(pedido);
     }
 
@@ -54,6 +62,14 @@ public class PedidoServiceImpl implements PedidoService {
                 .orElseThrow();
 
         pedido.setEstado(estado);
+
+        // Si se paga, liberar la mesa
+        if (estado.equals("PAGADO")) {
+            Mesa mesa = mesaRepository.findById(pedido.getMesa().getId())
+                    .orElseThrow();
+            mesa.setDisponible(true);
+            mesaRepository.save(mesa);
+        }
 
         return pedidoRepository.save(pedido);
     }
